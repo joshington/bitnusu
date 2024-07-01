@@ -9,10 +9,21 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@celo/contractkit": "^8.0.0",
+    "@openzeppelin/contracts": "^5.0.2",
+    "dotenv": "^16.4.5",
+    "ethers": "^6.13.1",
+    "firebase": "^10.12.2",
     "next": "14.2.4",
     "react": "^18",
     "react-dom": "^18",
     "react-icons": "^5.2.1",
-    "styled-components": "^6.1.11"
+    "styled-components": "^6.1.11",
+    "web3": "^1.10.4"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "babel-plugin-styled-components": "^2.1.4",
+    "hardhat": "^2.22.5"
   }
 }

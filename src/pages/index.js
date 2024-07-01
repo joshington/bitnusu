@@ -1,13 +1,18 @@
+import Web3 from "web3";
+import { newKitFromWeb3 } from "@celo/contractkit";
+
+import { useState, useEffect } from 'react';
+
 import React from 'react';
 import Layout from '../components/Layout';
 import Image from 'next/image';
 import hero from '../images/hero.png';
 import styled from 'styled-components';
 
-
+import { ContractKitProvider, ContractKit } from '@celo/contractkit';
 import { useRouter } from 'next/router';
 
-
+import { contractAddress, cUSDContractAddress } from '@/utils/constants';
 
 const Create = styled.button`
   padding: 10px;
@@ -39,6 +44,20 @@ const Redeem = styled.button`
 
 const DashboardHome = () => {
 
+  const [account, setAccount] = useState(null);
+
+
+  const [message, setMessage] = useState('');
+
+  const [kit, setKit] = useState(null);
+
+
+  const [address, setAddress] = useState(null);
+
+
+
+
+
   const router = useRouter();
 
   const createCard = () => {
@@ -47,9 +66,54 @@ const DashboardHome = () => {
   const redeemCard = () => {
     router.push("/dashboard/redeem")
   }
+
+  useEffect(() => {
+   
+
+    const init = async () => {
+      if (window.celo) {
+        const web3 = new Web3(window.celo);
+        const kit = newKitFromWeb3(web3);
+        setKit(kit);
+
+        await window.celo.enable();
+        const accounts = await web3.eth.getAccounts();
+        setAddress(accounts[0]);
+        // window.celo.on('accountsChanged', (accounts) => {
+        //   setAccount(accounts[0] || null);
+        // });
+      } else {
+        alert('Celo extension not found. Please install it.');
+      }
+    };
+
+    init();
+  }, []);
+
+  const connectWallet = async () => {
+    try {
+      if (!window.celo) {
+        alert('Celo extension not found. Please install it.');
+        return;
+      }
+      await window.celo.enable();
+      const accounts = await window.celo.request({ method: 'eth_requestAccounts' });
+      setAccount(accounts[0]);
+    } catch (error) {
+      console.error('Error connecting wallet:', error);
+      alert('Error connecting wallet');
+    }
+  };
+
+
+
+
+
+
   return (
     <Layout>
-      <div style={{display:"flex", flexDirection:"row",paddingTop:"60px"}}>
+      {/* <h3>Wallet: { address}</h3> */}
+      <div style={{ display: "flex", flexDirection: "row", paddingTop: "60px" }}>
         <div style={{padding:"50px",width:"800px"}}>
             <h2 style={{fontSize:"50px",fontWeight:"bold",color:"#0077b6"}}>Send the Gift of Crypto With Ease</h2>
           <p style={{ marginTop: "50px",fontSize:"25px" }}>
